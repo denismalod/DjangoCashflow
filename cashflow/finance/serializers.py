@@ -71,3 +71,27 @@ class CashFlowRecordSerializer(serializers.ModelSerializer):
             "category_id",
             "subcategory_id",
         ]
+    
+    def validate(self, data):
+        """
+        Проверяет логические зависимости:
+        - Категория должна принадлежать выбранному типу
+        - Подкатегория должна принадлежать выбранной категории
+        """
+        category = data.get("category")
+        type_ = data.get("type")
+        subcategory = data.get("subcategory")
+
+        # Проверка категории → типа
+        if category and type_ and category.type != type_:
+            raise serializers.ValidationError({
+                "category_id": "Выбранная категория не принадлежит выбранному типу."
+            })
+
+        # Проверка подкатегории → категории
+        if subcategory and category and subcategory.category != category:
+            raise serializers.ValidationError({
+                "subcategory_id": "Выбранная подкатегория не связана с выбранной категорией."
+            })
+
+        return data
