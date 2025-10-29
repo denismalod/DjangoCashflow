@@ -1,14 +1,8 @@
-from rest_framework.routers import DefaultRouter
-from .views import (
-    StatusViewSet, TypeViewSet, CategoryViewSet,
-    SubCategoryViewSet, CashFlowRecordViewSet
-)
+from django.urls import path
+from . import views
 
-router = DefaultRouter()
-router.register(r'statuses', StatusViewSet)
-router.register(r'types', TypeViewSet)
-router.register(r'categories', CategoryViewSet)
-router.register(r'subcategories', SubCategoryViewSet)
-router.register(r'records', CashFlowRecordViewSet)
-
-urlpatterns = router.urls
+urlpatterns = [
+    path('', views.records_list, name='records_list'),
+    path('record/add/', views.record_form, name='record_add'),
+    path('record/<int:pk>/edit/', views.record_form, name='record_edit'),
+]
