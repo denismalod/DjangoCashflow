@@ -43,12 +43,20 @@ def records_list(request):
     }
     return render(request, 'finance/index.html', context)
 
-def record_form(request, pk=None):
-    if pk:
-        record = get_object_or_404(CashFlowRecord, pk=pk)
-    else:
-        record = None
 
+def record_add(request):
+    if request.method == 'POST':
+        form = CashFlowRecordForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('records_list')
+    else:
+        form = CashFlowRecordForm()
+    return render(request, 'finance/record_form.html', {'form': form, 'title': 'Добавить запись'})
+
+
+def record_edit(request, pk):
+    record = get_object_or_404(CashFlowRecord, pk=pk)
     if request.method == 'POST':
         form = CashFlowRecordForm(request.POST, instance=record)
         if form.is_valid():
@@ -56,5 +64,4 @@ def record_form(request, pk=None):
             return redirect('records_list')
     else:
         form = CashFlowRecordForm(instance=record)
-
-    return render(request, 'finance/record_form.html', {'form': form})
+    return render(request, 'finance/record_form.html', {'form': form, 'title': 'Редактировать запись'})

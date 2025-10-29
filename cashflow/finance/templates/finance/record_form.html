@@ -37,7 +37,7 @@
             data: {category: categoryId},
             success: function(data) {
                 var options = '<option value="">---------</option>';
-                data.forEach(function(sub) {
+                data.results.forEach(function(sub) {
                     options += '<option value="'+sub.id+'">'+sub.name+'</option>';
                 });
                 $('#id_subcategory').html(options);
