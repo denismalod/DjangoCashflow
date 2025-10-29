@@ -10,6 +10,56 @@
 <div class="container mt-4">
     <h1>ДДС - Список записей</h1>
     <a href="{% url 'record_add' %}" class="btn btn-primary mb-3">Добавить запись</a>
+    <form method="get" class="row g-2 mb-3">
+  <div class="col-md-2">
+    <label class="form-label">С даты</label>
+    <input type="date" name="date_from" value="{{ filters.date_from }}" class="form-control">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">По дату</label>
+    <input type="date" name="date_to" value="{{ filters.date_to }}" class="form-control">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Статус</label>
+    <select name="status" class="form-select">
+      <option value="">Все</option>
+      {% for s in statuses %}
+        <option value="{{ s.id }}" {% if s.id|stringformat:"s" == filters.status_id %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Тип</label>
+    <select name="type" class="form-select">
+      <option value="">Все</option>
+      {% for t in types %}
+        <option value="{{ t.id }}" {% if t.id|stringformat:"s" == filters.type_id %}selected{% endif %}>{{ t.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Категория</label>
+    <select name="category" class="form-select">
+      <option value="">Все</option>
+      {% for c in categories %}
+        <option value="{{ c.id }}" {% if c.id|stringformat:"s" == filters.category_id %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Подкатегория</label>
+    <select name="subcategory" class="form-select">
+      <option value="">Все</option>
+      {% for sc in subcategories %}
+        <option value="{{ sc.id }}" {% if sc.id|stringformat:"s" == filters.subcategory_id %}selected{% endif %}>{{ sc.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-12 text-end mt-2">
+    <button type="submit" class="btn btn-primary">Фильтровать</button>
+    <a href="{% url 'records_list' %}" class="btn btn-secondary">Сбросить</a>
+  </div>
+</form>
 
     <table class="table table-bordered table-striped">
         <thead>
