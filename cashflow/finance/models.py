@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Status(models.Model):
@@ -53,7 +54,7 @@ class SubCategory(models.Model):
 
 
 class CashFlowRecord(models.Model):
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.now)
     status = models.ForeignKey(Status, on_delete=models.PROTECT, related_name="records")
     type = models.ForeignKey(Type, on_delete=models.PROTECT, related_name="records")
     category = models.ForeignKey(
