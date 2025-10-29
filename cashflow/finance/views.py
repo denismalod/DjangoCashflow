@@ -4,7 +4,44 @@ from .forms import CashFlowRecordForm  # создадим Django форму дл
 
 def records_list(request):
     records = CashFlowRecord.objects.all().order_by('-date')
-    return render(request, 'finance/index.html', {'records': records})
+
+    # получаем фильтры из GET-параметров
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    status_id = request.GET.get('status')
+    type_id = request.GET.get('type')
+    category_id = request.GET.get('category')
+    subcategory_id = request.GET.get('subcategory')
+
+    if date_from:
+        records = records.filter(date__gte=date_from)
+    if date_to:
+        records = records.filter(date__lte=date_to)
+    if status_id:
+        records = records.filter(status_id=status_id)
+    if type_id:
+        records = records.filter(type_id=type_id)
+    if category_id:
+        records = records.filter(category_id=category_id)
+    if subcategory_id:
+        records = records.filter(subcategory_id=subcategory_id)
+
+    context = {
+        'records': records,
+        'statuses': Status.objects.all(),
+        'types': Type.objects.all(),
+        'categories': Category.objects.all(),
+        'subcategories': SubCategory.objects.all(),
+        'filters': {
+            'date_from': date_from,
+            'date_to': date_to,
+            'status_id': status_id,
+            'type_id': type_id,
+            'category_id': category_id,
+            'subcategory_id': subcategory_id,
+        }
+    }
+    return render(request, 'finance/index.html', context)
 
 def record_form(request, pk=None):
     if pk:
