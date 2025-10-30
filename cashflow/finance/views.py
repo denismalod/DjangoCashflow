@@ -129,13 +129,13 @@ def delete_object(request, model, pk, redirect_url_name):
     return render(request, 'finance/confirm_delete.html', {'object': obj})
 
 def delete_status(request, pk):
-    return delete_object(request, Status, pk, 'records_list')
+    return delete_object(request, Status, pk, 'reference_manage')
 
 def delete_type(request, pk):
-    return delete_object(request, Type, pk, 'records_list')
+    return delete_object(request, Type, pk, 'reference_manage')
 
 def delete_category(request, pk):
-    return delete_object(request, Category, pk, 'records_list')
+    return delete_object(request, Category, pk, 'reference_manage')
 
 def delete_subcategory(request, pk):
-    return delete_object(request, SubCategory, pk, 'records_list')
+    return delete_object(request, SubCategory, pk, 'reference_manage')
