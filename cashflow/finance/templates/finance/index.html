@@ -102,9 +102,13 @@
               <td>{{ record.comment }}</td>
               <td>
                 <a href="{% url 'record_edit' record.id %}"
-                   class="btn btn-sm btn-warning">Редактировать</a>
-                <a href="{% url 'record_delete' record.id %}"
-                   class="btn btn-sm btn-danger">Удалить</a>
+                   class="btn btn-sm btn-warning me-2 mb-1">Редактировать</a>
+                <form action="{% url 'record_delete' record.id %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="btn btn-danger btn-sm"
+                          onclick="return confirm('Вы уверены, что хотите удалить эту запись?');">Удалить</button>
+                </form>
               </td>
             </tr>
           {% empty %}
