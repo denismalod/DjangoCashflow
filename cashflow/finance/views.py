@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import CashFlowRecord, Category, SubCategory, Type, Status
 from .forms import CashFlowRecordForm  # создадим Django форму для записи
+from django.http import JsonResponse
+from django.contrib import messages
 
 def records_list(request):
     records = CashFlowRecord.objects.all().order_by('-date')
@@ -67,8 +69,15 @@ def record_edit(request, pk):
     return render(request, 'finance/record_form.html', {'form': form, 'title': 'Редактировать запись'})
 
 
-from django.http import JsonResponse
-from .models import SubCategory
+def record_delete(request, pk):
+    record = get_object_or_404(CashFlowRecord, pk=pk)
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, 'Запись успешно удалена.')
+        return redirect('records_list')
+    
+    return render(request, 'finance/record_confirm_delete.html', {'record': record})
+
 
 def get_subcategories(request):
     """Возвращает список подкатегорий по id категории (для AJAX)."""
