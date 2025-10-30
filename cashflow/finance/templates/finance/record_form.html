@@ -29,7 +29,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Пример динамического обновления подкатегорий
     $('#id_category').change(function() {
         var categoryId = $(this).val();
         $.ajax({
@@ -37,7 +36,7 @@
             data: {category: categoryId},
             success: function(data) {
                 var options = '<option value="">---------</option>';
-                data.results.forEach(function(sub) {
+                data.forEach(function(sub) {
                     options += '<option value="'+sub.id+'">'+sub.name+'</option>';
                 });
                 $('#id_subcategory').html(options);

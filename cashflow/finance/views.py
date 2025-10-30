@@ -65,3 +65,13 @@ def record_edit(request, pk):
     else:
         form = CashFlowRecordForm(instance=record)
     return render(request, 'finance/record_form.html', {'form': form, 'title': 'Редактировать запись'})
+
+
+from django.http import JsonResponse
+from .models import SubCategory
+
+def get_subcategories(request):
+    """Возвращает список подкатегорий по id категории (для AJAX)."""
+    category_id = request.GET.get('category')
+    subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'name')
+    return JsonResponse(list(subcategories), safe=False)
