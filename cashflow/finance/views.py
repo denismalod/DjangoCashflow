@@ -3,11 +3,12 @@ from .models import CashFlowRecord, Category, SubCategory, Type, Status
 from .forms import CashFlowRecordForm  # создадим Django форму для записи
 from django.http import JsonResponse
 from django.contrib import messages
+from django.forms import modelform_factory
+from django.shortcuts import redirect
 
 def records_list(request):
     records = CashFlowRecord.objects.all().order_by('-date')
 
-    # получаем фильтры из GET-параметров
     date_from = request.GET.get('date_from')
     date_to = request.GET.get('date_to')
     status_id = request.GET.get('status')
@@ -84,3 +85,57 @@ def get_subcategories(request):
     category_id = request.GET.get('category')
     subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'name')
     return JsonResponse(list(subcategories), safe=False)
+
+def reference_manage(request):
+    StatusForm = modelform_factory(Status, fields=('name',))
+    TypeForm = modelform_factory(Type, fields=('name',))
+    CategoryForm = modelform_factory(Category, fields=('name', 'type'))
+    SubCategoryForm = modelform_factory(SubCategory, fields=('name', 'category'))
+
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+        if form_type == 'status':
+            form = StatusForm(request.POST)
+            if form.is_valid(): form.save()
+        elif form_type == 'type':
+            form = TypeForm(request.POST)
+            if form.is_valid(): form.save()
+        elif form_type == 'category':
+            form = CategoryForm(request.POST)
+            if form.is_valid(): form.save()
+        elif form_type == 'subcategory':
+            form = SubCategoryForm(request.POST)
+            if form.is_valid(): form.save()
+        return redirect('reference_manage')
+
+    context = {
+        'statuses': Status.objects.all(),
+        'types': Type.objects.all(),
+        'categories': Category.objects.select_related('type'),
+        'subcategories': SubCategory.objects.select_related('category'),
+        'status_form': StatusForm(),
+        'type_form': TypeForm(),
+        'category_form': CategoryForm(),
+        'subcategory_form': SubCategoryForm(),
+    }
+
+    return render(request, 'finance/reference_manage.html', context)
+
+def delete_object(request, model, pk, redirect_url_name):
+    obj = get_object_or_404(model, pk=pk)
+    if request.method == 'POST':
+        obj.delete()
+        return redirect(redirect_url_name)
+    return render(request, 'finance/confirm_delete.html', {'object': obj})
+
+def delete_status(request, pk):
+    return delete_object(request, Status, pk, 'records_list')
+
+def delete_type(request, pk):
+    return delete_object(request, Type, pk, 'records_list')
+
+def delete_category(request, pk):
+    return delete_object(request, Category, pk, 'records_list')
+
+def delete_subcategory(request, pk):
+    return delete_object(request, SubCategory, pk, 'records_list')

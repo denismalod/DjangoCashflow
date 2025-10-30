@@ -14,6 +14,7 @@
         {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
       {% endif %}
       <a href="{% url 'record_add' %}" class="btn btn-primary mb-3">Добавить запись</a>
+      <a href="{% url 'reference_manage' %}" class="btn btn-info mb-3">Управление справочниками</a>
       <form method="get" class="row g-2 mb-3">
         <div class="col-md-2">
           <label class="form-label">С даты</label>
