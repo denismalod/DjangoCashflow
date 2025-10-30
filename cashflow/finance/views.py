@@ -143,3 +143,33 @@ def delete_category(request, pk):
 
 def delete_subcategory(request, pk):
     return delete_object(request, SubCategory, pk, 'reference_manage')
+
+
+def edit_reference_item(request, model_name, pk):
+    model_map = {
+        'status': Status,
+        'type': Type,
+        'category': Category,
+        'subcategory': SubCategory,
+    }
+    model = model_map.get(model_name)
+    if not model:
+        return redirect('reference_manage') # Или 404
+
+    obj = get_object_or_404(model, pk=pk)
+    Form = modelform_factory(model, fields=('name', 'type') if model_name == 'category' else ('name', 'category') if model_name == 'subcategory' else ('name',))
+
+    if request.method == 'POST':
+        form = Form(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'{model._meta.verbose_name.capitalize()} успешно обновлен.')
+            return redirect('reference_manage')
+    else:
+        form = Form(instance=obj)
+
+    context = {
+        'form': form,
+        'title': f'Редактировать {model._meta.verbose_name}',
+    }
+    return render(request, 'finance/reference_form.html', context)

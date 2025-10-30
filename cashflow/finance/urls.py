@@ -17,4 +17,8 @@ urlpatterns = [
         views.delete_subcategory,
         name="delete_subcategory",
     ),
+    path('edit/status/<int:pk>/', views.edit_reference_item, {'model_name': 'status'}, name='edit_status'),
+    path('edit/type/<int:pk>/', views.edit_reference_item, {'model_name': 'type'}, name='edit_type'),
+    path('edit/category/<int:pk>/', views.edit_reference_item, {'model_name': 'category'}, name='edit_category'),
+    path('edit/subcategory/<int:pk>/', views.edit_reference_item, {'model_name': 'subcategory'}, name='edit_subcategory'),
 ]
