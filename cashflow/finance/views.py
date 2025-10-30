@@ -79,6 +79,10 @@ def record_delete(request, pk):
     
     return render(request, 'finance/record_confirm_delete.html', {'record': record})
 
+def get_categories(request):
+    type_id = request.GET.get('type')
+    categories = Category.objects.filter(type_id=type_id).values('id', 'name')
+    return JsonResponse(list(categories), safe=False)
 
 def get_subcategories(request):
     """Возвращает список подкатегорий по id категории (для AJAX)."""

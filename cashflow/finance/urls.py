@@ -7,6 +7,7 @@ urlpatterns = [
     path("edit/<int:pk>/", views.record_edit, name="record_edit"),
     path("delete/<int:pk>/", views.record_delete, name="record_delete"),
     path("api/subcategories/", views.get_subcategories, name="get_subcategories"),
+    path('api/categories/', views.get_categories, name='get_categories'),
     path("reference/", views.reference_manage, name="reference_manage"),
     path("delete/status/<int:pk>/", views.delete_status, name="delete_status"),
     path("delete/type/<int:pk>/", views.delete_type, name="delete_type"),

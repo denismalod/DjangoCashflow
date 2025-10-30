@@ -35,20 +35,48 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-    $('#id_category').change(function() {
-        var categoryId = $(this).val();
-        $.ajax({
-            url: '/api/subcategories/',
-            data: {category: categoryId},
-            success: function(data) {
-                var options = '<option value="">---------</option>';
-                data.forEach(function(sub) {
-                    options += '<option value="'+sub.id+'">'+sub.name+'</option>';
+            // Обновление категорий при выборе типа
+            $('#id_type').change(function() {
+                const typeId = $(this).val();
+                if (!typeId) {
+                    // Если тип не выбран — сбрасываем категории и подкатегории
+                    $('#id_category').html('<option value="">---------</option>');
+                    $('#id_subcategory').html('<option value="">---------</option>');
+                    return;
+                }       
+                $.ajax({
+                    url: '/api/categories/',
+                    data: { type: typeId },
+                    success: function(data) {
+                        let options = '<option value="">---------</option>';
+                        data.forEach(function(cat) {
+                            options += `<option value="${cat.id}">${cat.name}</option>`;
+                        });
+                        $('#id_category').html(options);
+                        $('#id_subcategory').html('<option value="">---------</option>'); // сбрасываем подкатегории
+                    }
                 });
-                $('#id_subcategory').html(options);
-            }
-        });
-    });
+            });
+            // Обновление подкатегорий при выборе категории
+            $('#id_category').change(function() {
+                var categoryId = $(this).val();
+                if (!categoryId) {
+                            // Если категория не выбрана — сбрасываем подкатегории
+                            $('#id_subcategory').html('<option value="">---------</option>');
+                            return;
+                        }
+                $.ajax({
+                    url: '/api/subcategories/',
+                    data: {category: categoryId},
+                    success: function(data) {
+                        var options = '<option value="">---------</option>';
+                        data.forEach(function(sub) {
+                            options += '<option value="'+sub.id+'">'+sub.name+'</option>';
+                        });
+                        $('#id_subcategory').html(options);
+                    }
+                });
+            });
         </script>
     </body>
 </html>
